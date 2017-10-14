@@ -1,20 +1,20 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include"linklist.h"
+#include"linktable.h"
 int Help();
+int Quit();
 #define CMD_MAX_LEN 128
 #define DESC_LEN    1024
 #define CMDNUM      10
-static tDataNode
+typedef struct DataNode
 { 
     tLinkTableNode *pNext;
     char *cmd;
     char *desc;
     int (*handler)();
-   // {"help","this is help cmd!",Help,&head[1]},
-    //{"version","menu program v1.0",NULL,NULL}
+   
 }tDataNode;
-tData *FindCmd(tLinkTable head,char cmd)
+tDataNode *FindCmd(tLinkTable * head,char * cmd)
 {
     tDataNode *pNode=(tDataNode*)GetLinkTableHead(head);
     while(pNode!=NULL)
@@ -24,13 +24,13 @@ tData *FindCmd(tLinkTable head,char cmd)
         pNode=(tDataNode*)GetNextLinkTableNode(head,(tLinkTableNode*)pNode);
     }
 }
-int ShowAllCmd(tLinTable*head)
+int ShowAllCmd(tLinkTable*head)
 {
     tDataNode *pNode=(tDataNode*)GetLinkTableHead(head);
     while(pNode!=NULL)
     {
-        printf("%s - %s\n",tDataNode->cmd,tDataNode->desc);
-        pNode=(tDataNode*)GetNextLinkTableNode(head,(tLinkNode*)pNode);
+        printf("%s - %s\n",pNode->cmd,pNode->desc);
+        pNode=(tDataNode*)GetNextLinkTableNode(head,(tLinkTableNode*)pNode);
     }
     return 0;
 }
@@ -38,14 +38,26 @@ int InitMenuData(tLinkTable **ppLinkTable)
 {
     *ppLinkTable=CreateLinkTable();
     tDataNode * pNode=(tDataNode*)malloc(sizeof(tDataNode));
-    pNode->data="help";
+    pNode->cmd="help";
     pNode->desc="Menu List";
     pNode->handler=Help;
-    addLinkTableNode(*ppLinkTable,(*tLinketable *)pNode);
-    
+    addLinkTableNode(*ppLinkTable,(tLinkTableNode *)pNode);
+    pNode=(tDataNode*)malloc(sizeof(tDataNode));
+    pNode->cmd="version";
+    pNode->desc="menu program v1.0";
+    pNode->handler=NULL;
+    addLinkTableNode(*ppLinkTable,(tLinkTableNode *)pNode);
+    pNode=(tDataNode*)malloc(sizeof(tDataNode));
+    pNode->cmd="quit";
+    pNode->desc="quit from menu";
+    pNode->handler=Quit;
+    addLinkTableNode(*ppLinkTable,(tLinkTableNode *)pNode);
+    return 0; 
 }
+tLinkTable * head=NULL;
 main()
 {
+    InitMenuData(&head);
     while(1)
     {
         char cmd[CMD_MAX_LEN];
@@ -68,4 +80,8 @@ int Help()
 {
     ShowAllCmd(head);
     return 0;
+}
+int Quit()
+{
+    exit(0);
 }
