@@ -4,8 +4,8 @@
 #define SUCESS 0
 #define FAILURE (-1)
 typedef struct LinkTableNode{
-    struct LinkTable * pnext;
-}LinktableNode;
+    struct LinkTableNode * pnext;
+}tLinkTableNode;
 typedef struct LinkTable{
     struct LinkTableNode * pHead;
     struct LinkTableNode * pTail;
@@ -13,9 +13,9 @@ typedef struct LinkTable{
     pthread_mutex_t mutex;//muilt process
 }tLinkTable;
 tLinkTable * CreateLinkTable();
-int DelLinkTable((tLinkTable *t,);
-int addLinkTableNode(tLinkTable *t,LinkTableNode *pNode);
-int DelLinkTableNode(tLinkTable *t,LinkTableNode *PNode);
-tLinkTableNode *GetLinkTableHead(tLinkTable *t);
-tLinkTableNode *GetNextLinkTableNode(tLinkTable *t,LinkTable *pNode)
+int DelLinkTable(tLinkTable *t);
+int addLinkTableNode(tLinkTable *t,tLinkTableNode *pNode);
+int DelLinkTableNode(tLinkTable *t,tLinkTableNode *PNode);
+tLinkTableNode * GetLinkTableHead(tLinkTable *t);
+tLinkTableNode * GetNextLinkTableNode(tLinkTable *t,tLinkTableNode *pNode);
 #endif
