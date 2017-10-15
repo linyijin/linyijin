@@ -11,22 +11,29 @@ tLinkTableNode * GetNextLinkTableNode(tLinkTable *t,tLinkTableNode *pNode)
 }
 tLinkTable * CreateLinkTable()
 {
-    tLinkTable *t;
-    t->pHead->pnext=t->pTail;
-    t->pTail->pnext=NULL;
+    tLinkTable *t=malloc(sizeof(tLinkTable));
+    t->pHead=t->pTail=NULL;
     t->SumOfNode=0;
     return t;
 }
+int DelLinkTable(tLinkTable * t)
+{
+     free(t);
+    return 0;
+}
+
 int addLinkTableNode(tLinkTable *t,tLinkTableNode *pNode)
 {
-    tLinkTableNode *i,*j;
-    pNode->pnext=t->pTail;
-    i=t->pHead;
-    while(i!=t->pTail)
+    if(t->pHead==NULL)
     {
-        j=i;
-        i=i->pnext;
+        t->pHead=pNode;
+        t->pTail=pNode;
     }
-    j->pnext=pNode;
-    return 0;
+    else
+    {
+        t->pTail->pnext=pNode;
+        t->pTail=pNode;
+    }
+    t->SumOfNode++;
+    t->pTail->pnext=NULL;
 }
