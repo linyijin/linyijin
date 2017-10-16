@@ -31,7 +31,6 @@ int Quit();
 #define DESC_LEN    1024
 #define CMD_NUM     10
 
-char cmd[CMD_MAX_LEN];
 
 /* data struct and its operations */
 
@@ -43,8 +42,9 @@ typedef struct DataNode
     int     (*handler)();
 } tDataNode;
 
-int SearchCondition(tLinkTableNode * pLinkTableNode)
+int SearchCondition(tLinkTableNode * pLinkTableNode, void * args)
 {
+    char * cmd =(char*)args;
     tDataNode * pNode = (tDataNode *)pLinkTableNode;
     if(strcmp(pNode->cmd, cmd) == 0)
     {
@@ -56,7 +56,7 @@ int SearchCondition(tLinkTableNode * pLinkTableNode)
 /* find a cmd in the linklist and return the datanode pointer */
 tDataNode* FindCmd(tLinkTable * head, char * cmd)
 {
-    return  (tDataNode*)SearchLinkTableNode(head,SearchCondition);
+    return  (tDataNode*)SearchLinkTableNode(head,SearchCondition,(void*)cmd);
 }
 
 /* show all cmd in listlist */
@@ -103,6 +103,7 @@ int main()
    /* cmd line begins */
     while(1)
     {
+        char cmd[CMD_MAX_LEN];
         printf("Input a cmd number > ");
         scanf("%s", cmd);
         tDataNode *p = FindCmd(head, cmd);
