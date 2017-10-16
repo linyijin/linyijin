@@ -146,13 +146,13 @@ tLinkTableNode * SearchLinkTableNode(tLinkTable *pLinkTable, int Conditon(tLinkT
         return NULL;
     }
     tLinkTableNode * pNode = pLinkTable->pHead;
-    while(pNode != pLinkTable->pTail)
+    while(1)
     {    
         if(Conditon(pNode) == SUCCESS)
         {
             return pNode;				    
-        }
-        pNode = pNode->pNext;
+            if(pNode==pLinkTable->pTail)break;
+        }     pNode = pNode->pNext;
     }
     return NULL;
 }
