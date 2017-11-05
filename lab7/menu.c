@@ -22,7 +22,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include<string.h>
 #include "linktable.h"
+#define CMD_MAX_ARG_NUM 128
 tLinkTable * head = NULL;
 int Help();
 int Quit();
@@ -39,12 +41,12 @@ typedef struct DataNode
     tLinkTableNode * pNext;
     char*   cmd;
     char*   desc;
-    int     (*handler)();
+    int     (*handler)(int argc,char *argv[]);
 } tDataNode;
 
-int SearchCondition(tLinkTableNode * pLinkTableNode, void * args)
+int SearchCondition(tLinkTableNode * pLinkTableNode, void * arg)
 {
-    char * cmd =(char*)args;
+    char * cmd =(char*)arg;
     tDataNode * pNode = (tDataNode *)pLinkTableNode;
     if(strcmp(pNode->cmd, cmd) == 0)
     {
@@ -70,7 +72,7 @@ int ShowAllCmd(tLinkTable * head)
     }
     return 0;
 }
-int MenuConfig(char * cmd,char *desc,int (*handler)())
+int MenuConfig(char * cmd,char *desc,int (*handler)(int argc,char *argv[]))
 {
 	tDataNode* pNode=NULL;
 	if(head==NULL)
@@ -117,23 +119,44 @@ int InitMenuData(tLinkTable ** ppLinktable)
 
 int ExecutMenu()
 {
-    InitMenuData(&head); 
+//    InitMenuData(&head); 
    /* cmd line begins */
     while(1)
     {
+	int argc=0;
+	char *argv[CMD_MAX_ARG_NUM];
         char cmd[CMD_MAX_LEN];
+	char *pcmd=NULL;
         printf("Input a cmd number > ");
-        scanf("%s", cmd);
-        tDataNode *p = (tDataNode*)SearchLinkTableNode(head,SearchCondition,(void*)cmd);
-        if( p == NULL)
+       // scanf("%s", cmd);
+	pcmd=fgets(cmd,CMD_MAX_LEN,stdin);
+        if( pcmd == NULL)
         {
-            printf("This is a wrong cmd!\n ");
+           // printf("This is a wrong cmd!\n ");
             continue;
         }
-        printf("%s - %s\n", p->cmd, p->desc); 
+	pcmd=strtok(pcmd," ");
+	while(pcmd!=NULL && argc<CMD_MAX_ARG_NUM)
+	{
+		argv[argc]=pcmd;
+		argc++;
+		pcmd=strtok(NULL," ");
+	}
+	if(argc==1)
+	{
+		int len=strlen(argv[0]);
+		*(argv[0]+len-1)='\0';
+	}
+	 tDataNode *p = (tDataNode*)SearchLinkTableNode(head,SearchCondition,(void*)argv[0]);
+	if(p==NULL)
+	{
+		printf("this is a wrong cmd");
+		continue;
+	}      
+ // printf("%s - %s\n", p->cmd, p->desc); 
         if(p->handler != NULL) 
         { 
-            p->handler();
+            p->handler(argc,argv);
         }
    
     }
@@ -145,15 +168,14 @@ int Help()
     return 0; 
 }
 
-int Quit()
-{
-    exit(0);
+
+int Quit(int argc,char* argv[])
+{    exit(0);
 }
-int main()
+int main(int argc,char* argv[])
 {
-	while(1)
-		{
+	
+			MenuConfig("version","2017.11.5",NULL);
+			MenuConfig("quit","quit from menu",Quit);
 			ExecutMenu();
-			return 0;
-		}
 }
