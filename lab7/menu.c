@@ -156,6 +156,7 @@ int ExecutMenu()
  // printf("%s - %s\n", p->cmd, p->desc); 
         if(p->handler != NULL) 
         { 
+	   printf("dear %s",argv[1]);
             p->handler(argc,argv);
         }
    
