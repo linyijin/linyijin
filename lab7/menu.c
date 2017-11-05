@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "linktable.h"
-#include "menu.h"
 tLinkTable * head = NULL;
 int Help();
 int Quit();
@@ -149,4 +148,12 @@ int Help()
 int Quit()
 {
     exit(0);
+}
+int main()
+{
+	while(1)
+		{
+			ExecutMenu();
+			return 0;
+		}
 }
